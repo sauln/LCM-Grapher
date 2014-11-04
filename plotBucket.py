@@ -182,23 +182,23 @@ class plotTab(QtCore.QObject):
 		return plotWidget
 
 
-	def getTagList(self, itemList):
-		#takes the itemList and gives us it in a format we can more readily display
-		tagDict = dict()
-		tag = [x[1] for x in itemList]
-		#we want to make this item list into a dictionary    
-		for each in itemList:
-			if each[0] in tagDict.keys():
-			    pass
-			else:
-			    tagDict[each[0]] = []
-			tagDict[each[0]].append(each[1])
+def getTagList(itemList):
+	#takes the itemList and gives us it in a format we can more readily display
+	tagDict = dict()
+	tag = [x[1] for x in itemList]
+	#we want to make this item list into a dictionary    
+	for each in itemList:
+		if each[0] in tagDict.keys():
+		    pass
+		else:
+		    tagDict[each[0]] = []
+		tagDict[each[0]].append(each[1])
 
-		return (tagDict, tag)
+	return (tagDict, tag)
 
 
 
-class plotStruct():#QtCore.QObject):
+class plotStruct(QtCore.QObject):
 	'''
 		This is a container for the plot and its associated plot bucket tab
 
@@ -220,7 +220,7 @@ class plotStruct():#QtCore.QObject):
 			
 
 	def buildPlotAndTab(self):
-		tagDict, tag = self.getTagList(self.itemList) 
+		tagDict, tag = getTagList(self.itemList) 
 		plot = plotDisplay.multiPlot(self.statThread, \
 			self.timer, self.itemList, self.printplus(tagDict), \
 			 "clockIn", self.removeDict)
@@ -395,8 +395,8 @@ class plotBucket(QtGui.QWidget):
 		if tupList in self.plots.keys():  
 			''' If the plot was created, but just
  			closed, then we reshow it'''
-		    if not self.plots[tupList].plot.plot.isVisible(): 
-		        self.plots[tupList].reshowPlot()
+			if not self.plots[tupList].plot.plot.isVisible(): 
+				self.plots[tupList].reshowPlot()
 		else: #build a new plot
 			''' 
 			if not, we build a new plot
