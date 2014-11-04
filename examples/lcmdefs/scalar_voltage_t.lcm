@@ -1,0 +1,7 @@
+package graphing_ex;
+
+struct scalar_voltage_t
+{
+  int64_t utime; // timestamp [us]
+  float voltage;  // a measured voltage [V]
+}

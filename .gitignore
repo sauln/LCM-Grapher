@@ -1,0 +1,13 @@
+*.pyc
+*.aux
+*writeup.log
+*writeup.synctex.gz
+*.mat
+*.p
+*.bin
+WriteUp
+simPlots
+plots
+*.mpg
+*.png
+
