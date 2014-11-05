@@ -24,8 +24,9 @@ class lcmGrapher():
 		self.importMods(modules)
 
 	def buildConnections(self):
-		self.lcmThread.sigNewChannel.connect(self.main.tree.newTreeChannel)
-		self.lcmThread.sigRemoveChannels.connect(self.main.tree.removeTreeChannels)
+		self.statThread.sigNewChannel.connect(self.main.tree.newTreeChannel)
+		#self.lcmThread.sigNewChannel.connect(self.main.tree.newTreeChannel)
+		#self.lcmThread.sigRemoveChannels.connect(self.main.tree.removeTreeChannels)
 		if hasattr(self.lcmThread, 'errorWindow'):
 			#refresh the error screen just to make 
 			#sure it shows up in the front
@@ -65,7 +66,7 @@ class lcmGrapher():
 
 		self.statThread = statThread.statThread()
 		self.lcmThread.sigNewMsg.connect( self.statThread.newMsg )
-		self.lcmThread.sigNewChannel.connect( self.statThread.newChannel )
+		#self.lcmThread.sigNewChannel.connect( self.statThread.newChannel )
 		self.lcmThread.sigTakeAttDict.connect( self.statThread.newAttDict )
 		self.lcmThread.refreshAttDict()
 		self.statThread.start()
@@ -124,8 +125,8 @@ class lcmGrapher():
 		self.main.tree.removeTreeChannels()
 		self.beginLCMThread(self.modules)
 		self.lcmThread.sigNewMsg.connect( self.statThread.newMsg )
-		self.lcmThread.sigNewChannel.connect( self.statThread.newChannel )
-		self.lcmThread.sigNewChannel.connect(self.main.tree.newTreeChannel)
+		#self.lcmThread.sigNewChannel.connect( self.statThread.newChannel )
+		#self.lcmThread.sigNewChannel.connect(self.main.tree.newTreeChannel)
 		self.lcmThread.sigRemoveChannels.connect(self.main.tree.removeTreeChannels)
 		self.lcmThread.sigTakeAttDict.connect( self.statThread.newAttDict )
 

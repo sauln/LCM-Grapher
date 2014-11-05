@@ -9,10 +9,8 @@ from modulePopup import modulePopup
 '''Listens to LCM and decodes the messages.  signs up new channels and sends arriving messages where they need to go.  It also imports all of modules'''
 
 class lcmThread(QtCore.QThread):  
-	sigNewMsg           = QtCore.pyqtSignal(object, 'QString')
+	sigNewMsg           = QtCore.pyqtSignal(object, 'QString',  'QString')
 		#every time a new message comes in, we send the decoded message to the statThread
-	sigNewChannel       = QtCore.pyqtSignal(object, 'QString', 'QString')
-		#every time a new channel is heard, we put it on display
 	sigUndecodeMsg      = QtCore.pyqtSignal('QString')
 		#if a message is undecodable then we still send it to statThread
 	sigRemoveChannels   = QtCore.pyqtSignal(object)
@@ -24,13 +22,17 @@ class lcmThread(QtCore.QThread):
 		self.lc                 = lcm.LCM()
 		self.running = True
 		#self.modules            = modules   #modules that we want to import
-		self.inModList          = []        #modules that have been successfully imported
-
-		self.attDict            = dict()    #key - type;                value - list of attributes
-		self.classTypeDict      = dict()    #key - channel;             value - class definition for that type
-		self.typeList           = []        #the list of types.  
-
-		self.undecodableList   = []         #list of channels that cannot be decoded
+		self.inModList          = []        
+			#modules that have been successfully imported
+		self.attDict            = dict()    
+			#key - type;                value - list of attributes
+		self.classTypeDict      = dict() 
+		self.classNameDict 		= dict()  
+			#key - channel;             value - class definition for that type
+		self.typeList           = []        
+			#the list of types.  
+		self.undecodableList   = []         
+			#list of channels that cannot be decoded
 		self.ignoreList = ["LCM_TUNNEL_INTROSPECT",
 				  'LCM_SELF_TEST',
 				  "att_imu.RAW"]
@@ -40,7 +42,10 @@ class lcmThread(QtCore.QThread):
 	def refreshAttDict(self):
 		self.findTypes()
 		self.sigTakeAttDict.emit(self.attDict)
-		         
+		
+
+
+         
 	def refactorChannels(self):
 		'''
 		new modules have been imported, must update all of our lists. 
@@ -52,6 +57,10 @@ class lcmThread(QtCore.QThread):
 		self.sigRemoveChannels.emit(self.undecodableList)
 		self.findTypes()
 		self.undecodableList = [] #remove everything from the undecodeableList, they will be readded if need be
+
+
+
+
 
 	def run(self):
 		#opens up the thread to subscribe to all -  
@@ -81,30 +90,39 @@ class lcmThread(QtCore.QThread):
 		self.sigTakeAttDict.emit(self.attDict)#give the attDict to the statThread
 
 	def anonHandler(self, channel, data):
-		#Everytime a message is heard, this method decodes it, stores the data where it needs to be stored and emits a signal.  If the message is not decodable then it
-		#handles it properly
+		'''
+		Everytime a message is heard, this method decodes it, 
+		stores the data where it needs to be stored and emits a 
+		signal.  If the message is not decodable then it	
+		handles it properly'''
+		
 		success = False
-		if channel in self.classTypeDict:#how can we use a differnt dict instead?
-		    msg = self.classTypeDict[channel].decode(data)           
-		    self.sigNewMsg.emit(msg, channel)
-
-		elif channel in self.undecodableList:
-		    self.sigNewMsg.emit(None, channel)
-		elif channel in self.ignoreList:
+		if channel in self.ignoreList:
 		    pass
+		elif channel in self.undecodableList:
+		    self.sigNewMsg.emit(None, channel, "unknown")
+
+		elif channel in self.classTypeDict:
+		    msg = self.classTypeDict[channel].decode(data)           
+		    self.sigNewMsg.emit(msg, channel, self.classNameDict[channel])
+
+
 		else:
-		    #brute force method for decode a message for the first time we've come across the channel
+		    #brute force method for decode a message 
+			#for the first time we've come across the channel
 		    for lcmtype in self.typeList:
 		        try:
-		            msg = lcmtype[1].decode(data)
-		            self.classTypeDict[channel] = lcmtype[1]#stores the class/type definition associated with the channel
-		            self.sigNewChannel.emit(msg, channel, lcmtype[0])               
-		            success = True              
+					msg = lcmtype[1].decode(data)
+					self.classTypeDict[channel] = lcmtype[1]#stores the class/type definition associated with the channel
+					self.classNameDict[channel] = lcmtype[0]
+					self.sigNewMsg.emit(msg, channel, self.classNameDict[channel])               
+					success = True              
 		        except ValueError:
 		            pass
-		    if not success:
-		        self.undecodableList.append(channel)
-		        self.sigNewChannel.emit(None, channel, "unknown" )
+			if not success:
+				self.undecodableList.append(channel)
+				self.sigNewMsg.emit(None, channel, "unknown" )
+				print "channel %s was undecodable"%channel
 
 	def __del__(self):
 		self.wait()

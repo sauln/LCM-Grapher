@@ -25,7 +25,7 @@ class lcmdata(object):  # use (object) to establish a new-style class
         Adding a new message to the collection
         '''
 
-        #edits by Nathaniel Saul - to add online statistic computations
+        #edits by Nathaniel Saul - to add online statistic computations - proved to not work how expected and edits were rolled back
 
 
         fields = msg_getfields(msg)
@@ -53,7 +53,7 @@ class lcmdata(object):  # use (object) to establish a new-style class
                         setattr(self,f,[])
                         val = list(val)   
                     else:
-                        print("Don't know what to do withy field %s of type %s" \
+                        print("Don't know what to do with field %s of type %s" \
                                 %(f,type(val)))
                     
                 try:
@@ -64,6 +64,7 @@ class lcmdata(object):  # use (object) to establish a new-style class
                     print val,
                     print type(val)
                     sys.exit()
+
     def add_val(self,attrname,val):
         '''
         val must be a scalar (int, str, long, float, etc.)

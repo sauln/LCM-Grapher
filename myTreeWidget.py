@@ -7,6 +7,8 @@ import datetime
 import plotDisplay
 reload(plotDisplay)
 import sip
+import lcmdata
+import numpy as np
 
 """
 TODO
@@ -86,20 +88,50 @@ class myTreeWidget(QtGui.QWidget):
 					pass
 					#print "%s must not have been there before" %channel
     
-    def newTreeChannel(self, msg, channel, lcmType ):
+    def newTreeChannel(self, msg, channel, lcmType):
+		print lcmType
+		#lcmType = "pose_t"
+		#print dir(msg)
+		#print dir(lcmdata.lcmdata)
+		#print "here"
+		#print type(msg)
+
+
+		#
+		fields = lcmdata.getfields(msg)
+		print fields
+		print dir(msg)
+		print msg.__class__
+		for each in fields:
+			print msg.__dict__[each]
+		#fields1 = lcmdata.msg_getfields(msg)
+
+		#print fields1
+		#for each in msg.__dict__.keys():
+		#	print msg.__dict__[each]
+		#	print each
+		#	print max(np.shape(msg.__dict__[each]))
+
+
+
+
         #Builds the tree based on the messages that lcmThread hears
-        channel     = str(channel)
-        parent      = self.treeWidget.invisibleRootItem()
-        column      = 0
-        title = "%s/%s" % (channel, lcmType)
-        self.channel[channel] = self.addParent(parent, column, title, str(channel))
-        #only adds the children if the channel was decodable-  clunky
-        if lcmType != "unknown":
-            self.channel[channel].setExpanded(False)
-            #we need lcmThread.attDict out.
-            for att in self.statThread.attDict[str(lcmType)]:
-                child = self.addChild(self.channel[channel], column, '%s' %str(att), 'data %s' %str(att))
-                self.childList.append(child)
+		channel     = str(channel)
+		parent      = self.treeWidget.invisibleRootItem()
+		column      = 0
+		title = "%s"%channel#/%s" % (channel, lcmType)
+		self.channel[channel] = self.addParent(parent, column, title, str(channel))
+		#only adds the children if the channel was decodable-  clunky
+		if lcmType != "unknown":
+			self.channel[channel].setExpanded(False)
+			#we need lcmThread.attDict out.
+			for att in self.statThread.attDict[str(lcmType)]:
+
+				#print self.statThread.dataDict.keys()
+				#print "stop"
+				#print type(self.statThread.dataDict[str(att)])
+				child = self.addChild(self.channel[channel], column, '%s' %str(att), 'data %s' %str(att))
+				self.childList.append(child)
 
 
     def addParent(self, parent, column, title, data):
