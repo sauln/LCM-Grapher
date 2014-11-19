@@ -110,15 +110,16 @@ class lcmThread(QtCore.QThread):
 		else:
 		    #brute force method for decode a message 
 			#for the first time we've come across the channel
-		    for lcmtype in self.typeList:
-		        try:
+			#print self.typeList
+			for lcmtype in self.typeList:
+				try:
 					msg = lcmtype[1].decode(data)
 					self.classTypeDict[channel] = lcmtype[1]#stores the class/type definition associated with the channel
 					self.classNameDict[channel] = lcmtype[0]
 					self.sigNewMsg.emit(msg, channel, self.classNameDict[channel])               
 					success = True              
-		        except ValueError:
-		            pass
+				except ValueError:
+					pass
 			if not success:
 				self.undecodableList.append(channel)
 				self.sigNewMsg.emit(None, channel, "unknown" )

@@ -57,7 +57,7 @@ class statThread(QtCore.QThread):
 				self.dataDict[channel].startTime)
 			self.dataDict[channel].frequency = \
 				round(elapsedTime / self.dataDict[channel].count , 3)
-			print "here"
+			#print "here"
 	
 		"""
 		if channel not in self.dataDict:
