@@ -1,66 +1,6 @@
 Version Beta!
 Please visit http://code.google.com/p/lcm-graphing-utility/
 
-
-
-Beginning October 14, 2014  the LCM Graphing Tool will se a tremendous push towards completion.  While this repo currently represents a MVP, over the next 2 months, we will redevelop the product to be both easily usable and easily developable.  Release will happen January 2015.  
-
-
-We will over this week:
-
-	isolate all of the ill-designed components and processes.  
-	isolate all of the bugs. 
-
-
-
-Ill-designed components:  
-	the plot bucket idea is lame.  
-	there needs more separation between the data and the GUI
-	don't attempt replace of the lcm-spy and the lcm-logger
-
-
-
-Instead, lets redesign from the ground up:
-	we want a program that will listen to all of the lcm traffic, and allow you to plot any of the lcm messages.
-
-goal:  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 This tool allows real-time visualization of defined LCM messages in an easy to operate graphical interface. It facilitates in the analysis of robot operations data and can help to streamline development of robotic control systems by giving the user the ability to observe LCM message passing in real time and graph the streaming data in various ways. This tool has been written in Python and uses PyQt for the GUI aspects and PyqtGraph for all plotting operations.  It was designed and built by Nathaniel Saul under the supervision of Professor Bingham, with lots of help from Jeff Delmerico.  Work for this project was funded by the University of Hawaii at Manoa's Field Robotics Laboratory and an undergraduate research grant from the College of Engineering. 
 
 
